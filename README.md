@@ -1,1 +1,3 @@
-# template.g8
+# finatra-template.g8
+
+sbt new giter-templates/finatra-template.g8
