@@ -6,6 +6,7 @@ object Dependencies {
     lazy val libthriftVersion = "0.10.0"
     lazy val finagleVersion = "21.10.0"
     lazy val tapirVersion = "0.18.3"
+    lazy val kindProjectorVersion = "0.13.0"
   }
 
   lazy val scalaTest = "org.scalatest" %% "scalatest" % versions.scalatestVersion

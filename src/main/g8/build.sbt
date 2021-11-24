@@ -44,9 +44,12 @@ lazy val compilerOptions: Seq[String] = Seq(
   "-Xlint:valpattern"
 )
 
+lazy val javaOptions = Seq("-source", "11", "-target", "11")
+
 lazy val buildSettings = Seq(
   scalaVersion := scala2_13,
   scalacOptions ++= compilerOptions,
+  javacOptions ++= javaOptions,
   Test / parallelExecution := false
 )
 
@@ -58,6 +61,7 @@ lazy val noPublish = Seq(
 
 lazy val commonSettings = Seq(
   libraryDependencies ++= Seq(
+    logback,
     scalaTest % Test
   ),
   addCompilerPlugin(
@@ -71,7 +75,7 @@ lazy val $name$ =
     .settings(buildSettings)
     .settings(noPublish)
     .settings(moduleName := "$name$")
-    .aggregate(thrift, client, server)
+    .aggregate(thrift, httpServer, thriftServer)
 
 lazy val thrift =
   project
@@ -83,8 +87,7 @@ lazy val thrift =
       libraryDependencies ++= Seq(
         libthrift,
         scrooge,
-        finagleThrift,
-        finatraThrift
+        finagleThrift
       )
     )
 
@@ -95,15 +98,16 @@ lazy val httpServer =
     .settings(buildSettings)
     .settings(commonSettings)
     .settings(
-        moduleName := "$name$-http-server",
-        libraryDependencies ++= Seq(
-          tapirJsonCirce,
-          tapirOpenapiCirce,
-          tapirOpenapi,
-          tapirSwagger,
-          tapirFinatra,
-          injectThriftClient
-        )
+      moduleName := "$name$-http-server",
+      libraryDependencies ++= Seq(
+        tapirJsonCirce,
+        tapirOpenapiCirce,
+        tapirOpenapi,
+        tapirSwagger,
+        tapirFinatra,
+        injectThriftClient,
+        finagleHttp
+      )
     )
     .settings(
       dockerBaseImage := "openjdk:11-jre-slim",
@@ -119,14 +123,15 @@ lazy val thriftServer =
     .settings(buildSettings)
     .settings(commonSettings)
     .settings(
-        moduleName := "$name$-thrift-server"
-        libraryDependencies ++= Seq(
-          tapirJsonCirce,
-          tapirOpenapiCirce,
-          tapirOpenapi,
-          tapirSwagger,
-          tapirFinatra
-        )
+      moduleName := "$name$-thrift-server",
+      libraryDependencies ++= Seq(
+        tapirJsonCirce,
+        tapirOpenapiCirce,
+        tapirOpenapi,
+        tapirSwagger,
+        tapirFinatra,
+        finatraThrift
+      )
     )
     .settings(
       dockerBaseImage := "openjdk:11-jre-slim",

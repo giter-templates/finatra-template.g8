@@ -1,0 +1,16 @@
+version: '3'
+services:
+  thrift-server:
+    image: '$name$-thrift-server:latest'
+    hostname: 'thrift-server'
+    container_name: '$name$-thrift-server'
+    ports:
+      - '9090:9090'
+  http-server:
+    image: '$name$-http-server:latest'
+    hostname: 'http-server'
+    container_name: '$name$-http-server'
+    depends_on:
+      - thrift-server
+    ports:
+      - '8080:8080'
